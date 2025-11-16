@@ -1,11 +1,26 @@
+See `docs/MPS_SETUP.md` for a complete, tested sequence to set up a macOS (Apple Silicon) environment with TensorFlow-Metal and PyTorch (MPS).
+
+Summary of recommended commands (venv):
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip setuptools wheel
 
-pip install tensorflow-macos==2.13.1 tensorflow-metal
+# Install TF for macOS + Metal plugin
+pip install tensorflow-macos==2.13.1 tensorflow-metal==0.7.0
 
-pip install --index-url https://download.pytorch.org/whl/metal.html torch torchvision torchaudio ??
+# Install PyTorch metal wheel (use the official index)
+pip install --index-url https://download.pytorch.org/whl/metal.html torch torchvision torchaudio
 
-pip install -r requirements.txt (--> ohne tensorflow)
+# Install project dependencies that are compatible with tensorflow-macos
+pip install -r requirements-macos-mps.txt
 
+# Install optional packages that may require torch/tf
+pip install ultralytics retina-face mtcnn
+
+# Finally install the package in editable mode
 pip install -e .
+```
+
+If pip cannot find a PyTorch metal wheel, see `docs/MPS_SETUP.md` for conda/mamba fallback and troubleshooting steps.
