@@ -8,7 +8,6 @@ import numpy as np
 
 # project dependencies
 from deepface.models.Detector import Detector, FacialAreaRegion
-import torch
 from deepface.commons.logger import Logger
 from deepface.commons import weight_utils
 
@@ -99,33 +98,7 @@ class YoloDetectorClient(Detector):
         )
 
         # Return face_detector
-        model_obj = YOLO(weight_file)
-
-        # Choose device: prefer MPS on macOS, otherwise CUDA, otherwise CPU.
-        try:
-            device = None
-            if torch.backends.mps.is_available():
-                device = 'mps'
-            elif torch.cuda.is_available():
-                device = 'cuda'
-            else:
-                device = 'cpu'
-            # Move model to the selected device if supported by the ultralytics model
-            try:
-                model_obj.to(device)
-            except Exception:
-                # Not all ultralytics versions expose .to for their model wrapper; fallback to predict(device=...)
-                pass
-            self._selected_device = device
-            try:
-                logger.info("Yolo model will run on device: %s", device)
-            except Exception:
-                pass
-        except Exception:
-            # Keep things working if torch is not available or MPS detection fails
-            self._selected_device = None
-
-        return model_obj
+        return YOLO(weight_file)
 
     def detect_faces(self, img: np.ndarray) -> List[FacialAreaRegion]:
         """
@@ -140,15 +113,12 @@ class YoloDetectorClient(Detector):
         resp = []
 
         # Detect faces
-        predict_kwargs = dict(
-            img=img,
+        results = self.model.predict(
+            img,
             verbose=False,
             show=False,
             conf=float(os.getenv("YOLO_MIN_DETECTION_CONFIDENCE", "0.25")),
-        )
-        if hasattr(self, "_selected_device") and self._selected_device is not None:
-            predict_kwargs["device"] = self._selected_device
-        results = self.model.predict(**predict_kwargs)[0]
+        )[0]
 
         # For each face, extract the bounding box, the landmarks and confidence
         for result in results:
