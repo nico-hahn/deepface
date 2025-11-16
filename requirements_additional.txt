@@ -10,3 +10,5 @@ tf-keras
 typing-extensions
 pydantic
 albumentations
+tensorflow-macos
+tensorflow-metal

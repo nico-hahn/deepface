@@ -1,5 +1,10 @@
 # deepface
 
+## Run locally:
+* `pip install -e .`
+* `cd deepface/api/src`
+* `python api.py -p 5001`
+
 <div align="center">
 
 [![Downloads](https://static.pepy.tech/personalized-badge/deepface?period=total&units=international_system&left_color=grey&right_color=blue&left_text=downloads)](https://pepy.tech/project/deepface)

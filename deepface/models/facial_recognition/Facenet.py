@@ -2,14 +2,38 @@
 from deepface.commons import package_utils, weight_utils
 from deepface.models.FacialRecognition import FacialRecognition
 from deepface.commons.logger import Logger
+try:
+    import tensorflow as _tf
+    # If a GPU is present (e.g., via tensorflow-metal on macOS), enable memory growth
+    try:
+        gpus = _tf.config.list_physical_devices('GPU')
+        tf_gpus = gpus
+        if gpus:
+            for gpu in gpus:
+                try:
+                    _tf.config.experimental.set_memory_growth(gpu, True)
+                except Exception:
+                    pass
+    except Exception:
+        pass
+except Exception:
+    # TensorFlow not installed or not available - skip
+    _tf = None
+    tf_gpus = []
 
 logger = Logger()
+# Keep TensorFlow GPU logging separate from import decisions. Import Keras / TF modules
+# based on the TF major version (this mirrors the repository original behavior)
+if _tf is not None:
+    try:
+        gpus = _tf.config.list_physical_devices('GPU')
+        if gpus:
+            logger.info('TensorFlow GPUs detected: %s', gpus)
+    except Exception:
+        pass
 
-# --------------------------------
-# dependency configuration
-
+# Decide between Keras (TF v1) and TensorFlow Keras (TF v2)
 tf_version = package_utils.get_tf_major_version()
-
 if tf_version == 1:
     from keras.models import Model
     from keras.layers import Activation
@@ -1671,7 +1695,14 @@ def load_facenet128d_model(
     Returns:
         model (Model)
     """
-    model = InceptionResNetV1()
+    if '_tf' in globals() and _tf is not None and len(globals().get('tf_gpus', [])) > 0:
+        try:
+            with _tf.device('/GPU:0'):
+                model = InceptionResNetV1()
+        except Exception:
+            model = InceptionResNetV1()
+    else:
+        model = InceptionResNetV1()
 
     weight_file = weight_utils.download_weights_if_necessary(
         file_name="facenet_weights.h5", source_url=url
@@ -1690,7 +1721,14 @@ def load_facenet512d_model(
         model (Model)
     """
 
-    model = InceptionResNetV1(dimension=512)
+    if '_tf' in globals() and _tf is not None and len(globals().get('tf_gpus', [])) > 0:
+        try:
+            with _tf.device('/GPU:0'):
+                model = InceptionResNetV1(dimension=512)
+        except Exception:
+            model = InceptionResNetV1(dimension=512)
+    else:
+        model = InceptionResNetV1(dimension=512)
 
     weight_file = weight_utils.download_weights_if_necessary(
         file_name="facenet512_weights.h5", source_url=url
