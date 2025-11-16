@@ -3,23 +3,23 @@
 # Install those two packages separately following the instructions in docs/MPS_SETUP.md.
 
 # Tensorflow
-tensorflow-macos==2.13.1
+tensorflow-macos==2.16.2
 tensorflow-metal==0.8.0
 
 # Core Python packages
 numpy==1.24.3
 pandas==2.0.3
-Pillow==9.0.0
+Pillow==10.2.0
 opencv-python==4.9.0.80
 requests>=2.27.1
 gdown>=3.10.1
 tqdm>=4.30.0
 
 # Deep learning / model glue (version-pinned to be compatible with tensorflow-macos 2.13.x)
-keras==2.13.1
-typing-extensions==4.5.0
+keras>=3.0.0
+typing-extensions==4.8.0
 protobuf==3.20.3
-tensorboard==2.13.0
+tensorboard==2.16.0
 
 # Torch
 torch==2.2.2
