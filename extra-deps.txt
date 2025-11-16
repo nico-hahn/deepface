@@ -1,0 +1,11 @@
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip setuptools wheel
+
+pip install tensorflow-macos==2.13.1 tensorflow-metal
+
+pip install --index-url https://download.pytorch.org/whl/metal.html torch torchvision torchaudio ??
+
+pip install -r requirements.txt (--> ohne tensorflow)
+
+pip install -e .
