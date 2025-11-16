@@ -1,0 +1,42 @@
+# macOS (Apple Silicon) requirements for running DeepFace with TensorFlow-Metal and PyTorch (MPS)
+# This file intentionally omits tensorflow-macos/tensorflow-metal and torch (PyTorch metal wheel).
+# Install those two packages separately following the instructions in docs/MPS_SETUP.md.
+
+# Tensorflow
+tensorflow-macos==2.13.1
+tensorflow-metal==0.8.0
+
+# Core Python packages
+numpy==1.24.3
+pandas==2.0.3
+Pillow==9.0.0
+opencv-python==4.9.0.80
+requests>=2.27.1
+gdown>=3.10.1
+tqdm>=4.30.0
+
+# Deep learning / model glue (version-pinned to be compatible with tensorflow-macos 2.13.x)
+keras==2.13.1
+typing-extensions==4.5.0
+protobuf==3.20.3
+tensorboard==2.13.0
+
+# Torch
+torch==2.2.2
+torchvision==0.17.2
+torchaudio==2.2.2
+facenet-pytorch==2.6.0
+
+# Web / API
+Flask>=1.1.2
+flask_cors>=4.0.1
+gunicorn>=20.1.0
+
+# YOLO
+ultralytics>=8.2.0
+
+# Optional detectors (installed after torch/tf)
+# retina-face, mtcnn and ultralytics may require extra steps; install them after core stack.
+mtcnn>=0.1.0
+retina-face>=0.0.14
+fire>=0.4.0
